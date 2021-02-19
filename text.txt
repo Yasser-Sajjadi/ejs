@@ -1,0 +1,877 @@
+form.validate({
+            errorPlacement: function errorPlacement(error, element) {
+                element.before(error);
+            },
+            rules: {
+                accept: {
+                    required: true
+                },
+                mobile: {
+                    required: true
+                },
+                password: {
+                    required: true,
+                    minlength: 6
+                },
+                confirm: {
+                    required: true,
+                    minlength: 6,
+                    equalTo: "#password"
+                },
+                verify: {
+                    required: true,
+                    minlength: 4,
+                    maxlength: 4
+                }
+            },
+            messages: {
+                accept: "Please accept our policy",
+                mobile: {
+                    required: "Please enter a mobile",
+                },
+                password: {
+                    required: "Please provide a password",
+                },
+                confirm: {
+                    required: "Please provide a password",
+                    equalTo: "Please enter the same password as above"
+                }
+            },
+            errorPlacement: function(error, element) {
+                var placement = $(element).data('error');
+                if (placement) {
+                    $(placement).append(error)
+                } else {
+                    error.insertAfter(element);
+                }
+            }
+        });
+
+
+
+
+
+
+
+
+
+
+
+
+<h3>Forms</h3>
+            <section>
+            <div id="section_mobile" name= "section_mobile">
+            <div><input id="mobile" name="mobile" type="text" placeholder="Mobile +98x" class="required"/></div><br />
+            <div><button id="btn_mobile">Submit</button></div>
+            </div>
+            </section>
+            <h3>Verify</h3>
+            <section>
+            <div><input id="verify" name="verify" type="text" placeholder="verify code" class="required"/></div><br />
+            <div><button id="btn_verify">Verify</button></div>
+            </section>
+
+
+
+
+
+
+
+            "#mobile": {
+                bind: "mobile",
+                watch: "#accept",
+                css: {
+                    "Red": /^.\w*$/,
+                    "Green": /^\s*(?:\+?(\d{1,3}))?([-. (]*(\d{3})[-. )]*)?((\d{3})[-. ]*(\d{2,4})(?:[-.x ]*(\d+))?)\s*$/,
+                    ":disabled": function(data) {
+                        return (!data.accept.length);
+                    }
+                }
+            },
+
+
+position: { of: '#password', my: 'top center', at: 'top center' },
+open: function(event, ui) {
+    ui.tooltip.hover(
+        function() {
+            $(this).fadeTo("slow", 0.5);
+        });
+}
+});
+
+
+"#popup": {
+                init: function($control, runtime) {
+                    $control.dialog({
+                        classes: {
+                            "ui-dialog": "highlight"
+                        },
+                        position: {
+                            my: "center top",
+                            at: "center bottom+15",
+                            of: "#password"
+                        },
+                        resizable: false,
+                        modal: false,
+                        show: {
+                            effect: "clip",
+                            duration: 200
+                        },
+                        draggable: false,
+                        autoOpen: true,
+                        dialogClass: "alert",
+                        width: 300,
+                        create: function() {
+                            $(".ui-dialog").find(".ui-dialog-titlebar").css({
+                                'background-image': 'none',
+                                'background-color': 'white',
+                                'border': 'none',
+                                'display': 'none'
+                            });
+                            $(".ui-dialog").css({
+                                'box-shadow': '0 0 0 7px rgba(0,0,0,0.1)',
+                                '-webkit-box-shadow': '0px 0px 10px rgba(0, 0, 0, 0.5)',
+                                '-moz-box-shadow': '0px 0px 10px rgba(0, 0, 0, 0.5)'
+                            });
+                            $(".ui-dialog").addClass("ui-tooltip-arrow");
+                            $(".ui-dialog-buttonpane").css({
+                                'display': 'none',
+                            });
+                        },
+                        closeOnEscape: false
+                    });
+                },
+                watch: "#password"
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                 $(document).on('click', '#btn_mobile', (event) => {
+            event.preventDefault();
+            if (!app.data.mobile.length) {
+                return;
+            }
+            $.ajax({
+                url: 'api/mobiles/create',
+                type: "POST",
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    uid: app.data.uid,
+                    mobile: app.data.mobile
+                }),
+                headers: {
+                    Authorization: `Bearer ${app.data.jwt.token}`
+                },
+                dataType: 'json',
+                success: function(res) {
+
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    console.info(xhr.responseJSON);
+                    app.data.error = {
+                        xhr,
+                        ajaxOptions,
+                        thrownError
+                    }
+                }
+            });
+
+        });
+
+        $(document).on('click', '#btn_verify', (event) => {
+            event.preventDefault();
+            if (!app.data.verify.length) {
+                return;
+            }
+            $.ajax({
+                url: 'api/mobiles/verify',
+                type: "POST",
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    token: app.data.verify
+                }),
+                headers: {
+                    Authorization: `Bearer ${app.data.jwt.token}`
+                },
+                dataType: 'json',
+                success: function(res) {
+                    //$(".wizard").steps("next");
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    app.data.error = {
+                        xhr,
+                        ajaxOptions,
+                        thrownError
+                    }
+                }
+            });
+        });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            "#btn-sign-in": {
+                watch: "#id",
+                css: {
+                    ":disabled": function(data) {
+                        return !(data.current !== null);
+                    }
+                },
+                bind: function(data, value, $control) {
+                    if (value != null) {
+                        if (!(data.alias !== null && data.alias.length > 0)) {
+                            data.error = "Alias, UID, Mobile or Email is required"
+                            console.info(data.error);
+                            $("#alias").focus();
+                            return;
+                        }
+
+                        if (!(data.password !== null && data.password.length > 0)) {
+                            data.error = "Password is required"
+                            console.info(data.error);
+                            $("#password").focus();
+                            return;
+                        }
+
+                        const xhr1 = $.ajax({
+                            url: 'api/emails/check',
+                            type: "post",
+                            contentType: 'application/json',
+                            data: JSON.stringify({
+                                email: data.alias
+                            }),
+                            dataType: 'json',
+                            async: false
+                        });
+
+                        const xhr2 = $.ajax({
+                            url: 'api/mobiles/check',
+                            type: "post",
+                            contentType: 'application/json',
+                            data: JSON.stringify({
+                                mobile: data.alias
+                            }),
+                            dataType: 'json',
+                            async: false
+                        });
+
+                        const xhr3 = $.ajax({
+                            url: 'api/aliases/check',
+                            type: "post",
+                            contentType: 'application/json',
+                            data: JSON.stringify({
+                                alias: data.alias
+                            }),
+                            dataType: 'json',
+                            async: false
+                        });
+
+                        if (xhr1.status === 200) {
+                            data.uid = xhr1.responseJSON.data.uid;
+                        } else if (xhr2.status === 200) {
+                            data.uid = xhr2.responseJSON.data.uid;
+                        } else if (xhr3.status === 200) {
+                            data.uid = xhr3.responseJSON.data.uid;
+                        } else {
+                            data.uid = data.alias;
+                        }
+
+                        $.ajax({
+                            url: 'api/users/authenticate',
+                            type: "post",
+                            contentType: 'application/json',
+                            data: JSON.stringify({
+                                uid: data.uid,
+                                password: data.password
+                            }),
+                            dataType: 'json',
+                            success: function(res) {
+                                console.info(res);
+                                if (data.account.all !== null) {
+                                    if (!(data.account.all.some(account => (account.id === res.data._id)))) {
+                                        data.account.all.push({
+                                            id: res.data._id,
+                                            alias: res.data.alias.value,
+                                            jwt: res.data.jwt.token,
+                                            token: res.data.refreshToken.token
+                                        });
+                                    }
+                                } else {
+                                    data.account.all = new Array({
+                                        id: res.data._id,
+                                        alias: res.data.alias.value,
+                                        jwt: res.data.jwt.token,
+                                        token: res.data.refreshToken.token
+                                    });
+                                }
+                                data.account.active = {
+                                    id: res.data._id,
+                                    alias: res.data.alias.value,
+                                    jwt: res.data.jwt.token,
+                                    token: res.data.refreshToken.token
+                                };
+                                $.cookie('cookie-app', data.account, {
+                                    expires: 7
+                                });
+                                console.info($.cookie('cookie-app'));
+                                //$(location).prop('href', '/');
+                            },
+                            error: function(xhr, ajaxOptions, thrownError) {
+                                console.info(xhr.responseJSON);
+                                data.error = xhr.responseJSON;
+                            }
+                        });
+                    }
+
+                }
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div>
+        <h3>Sign up</h3>
+        <section>
+        <div class="fs20">
+            <div>
+                <input id="alias" name="alias" type="text" placeholder="Alias"/><br />
+                <span class="my-error-tip"></span>
+            </div><br />
+            <div>
+                <input id="password" name="password" type="password" placeholder="password"/><br />
+                <span class="my-error-tip"></span>
+            </div>
+            <div id="pswd_info" class="fs90">
+                <h4>Password must meet the following requirements:</h4>
+                <div>
+                    <div id="letter"><span class="ui-icon ui-icon-close"/>At least <strong>one letter</strong></div>
+                    <div id="capital"><span class="ui-icon ui-icon-close"/>At least <strong>one capital letter</strong></div>
+                    <div id="number"><span class="ui-icon ui-icon-close"/>At least <strong>one number</strong></div>
+                    <div id="special"><span class="ui-icon ui-icon-close"/>At least <strong>one special letter</strong></div>
+                    <div id="length"><span class="ui-icon ui-icon-close"/>Be at least <strong>8 characters</strong></div>
+                </div>
+            </div>
+        </div><br />
+        <div>
+            <input id="accept" type="checkbox" class="required"/>
+            <span> I agree to <a><strong>Service agreement</strong></a> and <a><strong>Privacy policy</strong></a>.</span>
+        </div><br />
+        <div class="center"><input id="btn_signup" name="btn_signup" type="button" value="Sign up"/></div><br />
+        <div><a href="/signin"><strong>Have an account? Sign in</strong></a></div>
+        <br /><br />
+        <span id="error"></span>
+        </section>
+        
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+var app = {
+    accept: ["active"],
+    id: null,
+    password: null
+};
+
+// Manifest
+var manifest = {
+    data: {
+        accept: ["active"],
+        id: null,
+        password: null
+    },
+
+    init: function($node, runtime) {
+        $node.html(this.html.join("")) // Draw HTML
+            .css({
+                opacity: 0.1
+            });
+
+        $node.then(function() { // Fade when start succeds
+            $node.animate({
+                opacity: 1
+            }, 500);
+        });
+    },
+
+    ui: {
+        "#accept": {
+            bind: function(data, value, $control) {
+                if (value !== null) {
+                    data.accept = value;
+                }
+                return data.accept;
+            },
+            check: function(data, value, $control) {
+                if (value === null) {
+                    return "Please accept our policy";
+                }
+            }
+        },
+        '#error': {
+            bind: "error",
+            watch: "#btn_signup"
+        },
+        "#password": {
+            bind: function(data, value, $control) {
+                if (value !== null) {
+                    data.password = value;
+                    if (!/^(.*[a-z].*)$/i.test(value)) {
+                        $('#letter').removeClass('SeaGreen').addClass('Salmon');
+                        $('#letter span').removeClass('ui-icon-check').addClass('ui-icon-close');
+                    } else {
+                        $('#letter').removeClass('Salmon').addClass('SeaGreen');
+                        $('#letter span').removeClass('ui-icon-close').addClass('ui-icon-check');
+                    }
+                    if (!/^(.*[A-Z].*)$/i.test(value)) {
+                        $('#capital').removeClass('SeaGreen').addClass('Salmon');
+                        $('#capital span').removeClass('ui-icon-check').addClass('ui-icon-close');
+                    } else {
+                        $('#capital').removeClass('Salmon').addClass('SeaGreen');
+                        $('#capital span').removeClass('ui-icon-close').addClass('ui-icon-check');
+                    }
+                    if (!/^(.*[0-9].*)$/i.test(value)) {
+                        $('#number').removeClass('SeaGreen').addClass('Salmon');
+                        $('#number span').removeClass('ui-icon-check').addClass('ui-icon-close');
+                    } else {
+                        $('#number').removeClass('Salmon').addClass('SeaGreen');
+                        $('#number span').removeClass('ui-icon-close').addClass('ui-icon-check');
+                    }
+                    if (!/^(.*[#?!@$%^&*-].*)$/i.test(value)) {
+                        $('#special').removeClass('SeaGreen').addClass('Salmon');
+                        $('#special span').removeClass('ui-icon-check').addClass('ui-icon-close');
+                    } else {
+                        $('#special').removeClass('Salmon').addClass('SeaGreen');
+                        $('#special span').removeClass('ui-icon-close').addClass('ui-icon-check');
+                    }
+                    if (!/^(.{8,})$/i.test(value)) {
+                        $('#length').removeClass('SeaGreen').addClass('Salmon');
+                        $('#length span').removeClass('ui-icon-check').addClass('ui-icon-close');
+                    } else {
+                        $('#length').removeClass('Salmon').addClass('SeaGreen');
+                        $('#length span').removeClass('ui-icon-close').addClass('ui-icon-check');
+                    }
+                }
+                return data.password;
+            },
+            watch: "#alias",
+            css: {
+                Tomato: /^(?=.*?[A-Z]).{1,}$/,
+                OrangeRed: /^(?=.*?[A-Z])(?=.*?[a-z]).{1,}$/,
+                Orange: /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{1,}$/,
+                Salmon: /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{1,}$/,
+                SteelBlue: /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/,
+                ":disabled": function(data) {
+                    return !(data.alias !== null && data.alias.length > 0);
+                }
+            }
+        },
+        "#alias": {
+            bind: function(data, value, $control) {
+                if (value !== null) {
+                    data.alias = value;
+                }
+                return data.alias;
+            },
+            delay: 150,
+            check: function(data, value, $control) {
+                data.aliasTaken = false;
+                if (value !== null && value.length > 3) {
+                    const xhr = $.ajax({
+                        url: 'api/aliases/check',
+                        type: "post",
+                        contentType: 'application/json',
+                        data: JSON.stringify({
+                            alias: value
+                        }),
+                        async: false,
+                        dataType: 'json'
+                    });
+                    if (xhr.status === 200) {
+                        data.aliasTaken = true;
+                        return `${value} already taken`;
+                    }
+                }
+            },
+            css: {
+                Brown: function(data) {
+                    return data.alias.length && (!/^(([A-Za-z0-9]+)(?:[. @_-][A-Za-z0-9]+)*){3,}$/i.test(data.alias));
+                },
+                SteelBlue: function(data) {
+                    return data.alias.length && !(!/^(([A-Za-z0-9]+)(?:[. @_-][A-Za-z0-9]+)*){3,}$/i.test(data.alias));
+                }
+            }
+        },
+        "#btn_signup": {
+            watch: "#accept",
+            css: {
+                ":disabled": function(data) {
+                    return !(data.accept !== null && data.accept.length > 0);
+                }
+            },
+            bind: function(data, value, $control) {
+                if (value != null) {
+                    if ((!/^(([A-Za-z0-9]+)(?:[. @_-][A-Za-z0-9]+)*){3,}$/i.test(data.alias))) {
+                        data.error = "Alias can include letters, numeric values, special [@.-_] characters and space"
+                        console.info(data.error);
+                        $("#alias").focus();
+                        return;
+                    }
+                    if (data.aliasTaken) {
+                        data.error = `${data.alias} already taken`
+                        console.info(data.error);
+                        $("#alias").focus();
+                        return;
+                    }
+
+                    if (!/^(.*[a-z].*)$/i.test(data.password)) {
+                        data.error = "Password must be at least <strong>one letter</strong>"
+                        console.info(data.error);
+                        $("#password").focus();
+                        return;
+                    }
+                    if (!/^(.*[A-Z].*)$/i.test(data.password)) {
+                        data.error = "Password must be at least <strong>one capital letter</strong>"
+                        console.info(data.error);
+                        $("#password").focus();
+                        return;
+                    }
+                    if (!/^(.*[0-9].*)$/i.test(data.password)) {
+                        data.error = "Password must be at least <strong>one number</strong>"
+                        console.info(data.error);
+                        $("#password").focus();
+                        return;
+                    }
+                    if (!/^(.*[#?!@$%^&*-].*)$/i.test(data.password)) {
+                        data.error = "Password must be at least <strong>one special letter"
+                        console.info(data.error);
+                        $("#password").focus();
+                        return;
+                    }
+                    if (!/^(.{8,})$/i.test(data.password)) {
+                        data.error = "Password must be at least <strong>8 characters</strong>"
+                        console.info(data.error);
+                        $("#password").focus();
+                        return;
+                    }
+                    if (!data.accept.length) {
+                        data.error = "<span>Please accept <strong>Service agreement</strong> and <strong>Privacy policy</strong>.</span>"
+                        console.info(data.error);
+                        $("#accept").focus();
+                        return;
+                    }
+
+                    $.ajax({
+                        url: 'api/users/create',
+                        type: "post",
+                        contentType: 'application/json',
+                        data: JSON.stringify({
+                            alias: data.alias,
+                            password: data.password,
+                            accept: data.accept.length > 0
+                        }),
+                        dataType: 'json',
+                        success: function(res) {
+                            console.info(res);
+                            //$(".wizard").steps("next");
+                            $.cookie('auth-data', JSON.stringify(res.data), {
+                                expires: (new Date(Date.parse(res.data.refreshToken.expiresDate) - Date.parse(res.data.refreshToken.updatedAt))).getDay()
+                            });
+                            $(location).prop('href', '/');
+                        },
+                        error: function(xhr, ajaxOptions, thrownError) {
+                            console.info(xhr.responseJSON);
+                            data.error = xhr.responseJSON;
+                        }
+                    });
+                }
+
+            }
+        }
+    }
+}
+
+jQuery(document).ready(function() {
+    const cookie = $.cookie('auth-data');
+    if (cookie !== undefined) {
+        const metadata = JSON.parse(cookie);
+        if (metadata && metadata.uid !== null) {
+            //$(location).prop('href', '/');
+        }
+    }
+    var form = $("#wizard");
+    form.my(manifest, app);
+});
+
+
+
+for (var obj of value) {
+                                console.info(obj);
+                                var clone = $(element).clone();
+                                prepare(obj, clone);
+                                clone.appendTo(element);
+                            }
+
+
+if (isObject(value)) {
+                                prepare(value, $(element));
+                            } else if ($.isArray(value)) {
+                                value.forEach((val) => {
+                                    var elem = $(element).children().clone();
+                                    elem.appendTo($(element));
+                                    prepare(val, elem);
+                                });
+                            } else {
+                                if (element.type && (aiObjects.some(x => x === element.type))) {
+                                    element.value = value;
+                                } else {
+                                    element.textContent = value;
+                                }
+                            }
+
+
+
+
+
+
+
+
+
+
+
+elements.each((index, element) => {
+                var property = $(element).attr('data-bind');
+                if (object.hasOwnProperty(property)) {
+                    var value = object[property];
+                    Object.defineProperty(object, property, {
+                        configurable: true,
+                        enumerable: true,
+                        get: function() {
+                            return value;
+                        },
+                        set: function(val) {
+                            value = val;
+                            if (element.type && (aiObjects.some(x => x === element.type))) {
+                                element.value = value;
+                            } else {
+                                element.textContent = value;
+                            }
+                        }
+                    });
+                }
+
+                element.addEventListener('input', function() {
+                    object[property] = element.value;
+                });
+            });
+
+
+
+
+
+            else if ($.isArray(object)) {
+                Object.defineProperty(object, "push", {
+                    configurable: true,
+                    enumerable: true,
+                    value: function() {
+                        for (var i = 0, n = this.length, l = arguments.length; i < l; i++, n++) {
+                            this.onchange.call(this, n, this[n] = arguments[i], "add");
+                            watch(arguments[i]);
+                        }
+                        return n;
+                    }
+                });
+
+                Object.defineProperty(object, "pop", {
+                    configurable: true,
+                    enumerable: true,
+                    value: function() {
+                        if (this.length > -1) {
+                            var n = this.length - 1,
+                                item = this.pop();
+                            delete this[n];
+                            this.onchange.call(this, n, item, "remove");
+                            return item;
+                        }
+                    }
+                });
+
+                Object.defineProperty(object, "unshift", {
+                    configurable: true,
+                    enumerable: true,
+                    value: function() {
+                        for (var i = 0, ln = arguments.length; i < ln; i++) {
+                            this.splice(i, 0, arguments[i]);
+                            defineIndexProperty(this.length - 1);
+                            this.onchange.call(this, i, arguments[i], "add");
+                            watch(arguments[i]);
+                        }
+                        for (; i < this.length; i++) {
+                            this.onchange.call(this, i, this[i], "set");
+                            watch(this[i]);
+                        }
+                        return this.length;
+                    }
+                });
+
+                Object.defineProperty(object, "shift", {
+                    configurable: true,
+                    enumerable: true,
+                    value: function() {
+                        if (this.length > -1) {
+                            var item = this.shift();
+                            delete this[this.length];
+                            this.onchange.call(this, 0, item, "remove");
+                            return item;
+                        }
+                    }
+                });
+
+                Object.defineProperty(object, "splice", {
+                    configurable: true,
+                    enumerable: true,
+                    value: function(index, howMany /*, element1, element2, ... */ ) {
+                        var removed = [],
+                            item;
+
+                        index = index == null ? 0 : index < 0 ? this.length + index : index;
+
+                        howMany = howMany == null ? this.length - index : howMany > 0 ? howMany : 0;
+
+                        while (howMany--) {
+                            item = this.splice(index, 1)[0];
+                            removed.push(item);
+                            delete this[this.length];
+                            this.onchange.call(this, index + removed.length - 1, item, "remove");
+                        }
+
+                        for (var i = 2, ln = arguments.length; i < ln; i++) {
+                            this.splice(index, 0, arguments[i]);
+                            defineIndexProperty(this.length - 1);
+                            this.onchange.call(this, index, arguments[i], "add");
+                            watch(arguments[i]);
+                            index++;
+                        }
+
+                        return removed;
+                    }
+                });
+
+                Object.defineProperty(object, "length", {
+                    configurable: true,
+                    enumerable: true,
+                    get: function() {
+                        return this.length;
+                    },
+                    set: function(value) {
+                        var n = Number(value);
+                        var length = this.length;
+                        if (n % 1 === 0 && n >= 0) {
+                            if (n < length) {
+                                this.splice(n);
+                            } else if (n > length) {
+                                this.push.apply(this, new Array(n - length));
+                            }
+                        } else {
+                            throw new RangeError("Invalid array length");
+                        }
+                        this.length = n;
+                        return value;
+                    }
+                });
+            }
+
+
+
+
+$(element).find(`[data-bind]`).each((index2, element2) => {
+                            var property2 = $(element2).attr('data-bind');
+                            console.info(property2)
+                            if (value.hasOwnProperty(property2)) {
+                                let value2 = value[property2];
+                                Object.defineProperty(value, property2, {
+                                    configurable: true,
+                                    enumerable: true,
+                                    get: function() {
+                                        return value2;
+                                    },
+                                    set: function(val) {
+                                        value2 = val;
+                                        value.onchange.call(value, property2, value2, "set");
+                                    }
+                                });
+                            }
+                            element2.addEventListener('input', function() {
+                                value[property2] = element2.value;
+                            });
+                        });

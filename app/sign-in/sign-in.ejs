@@ -1,0 +1,60 @@
+<section id="wizard" class="section section-signin page-header col-lg-5 mx-auto text-center">
+    <div class="container">
+        <div class="row">
+            <div class="card card-login">
+                <form id="form-account" class="form">
+                    <h2 class="title ">Sign In</h2>
+                    <div class="container">
+                        <div class="card-body">
+                            <h4 class="card-title">Hi, there!</h4>
+                            <h6 class="card-subtitle mb-2 text-muted">Welcome to Service</h6>
+                            <p class="card-text">Select an account to sign in, forget or manage a saved account on this device.</p>
+                        </div>
+                    </div>
+                    <div class="card-body mx-auto">
+                        <div id="group-id" class="form-group label-floating has-success input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <i class="material-icons">face</i>
+                                </span>
+                            </div>
+                            <input id="input-id" data-bind="bind-id" type="text" class="form-control" placeholder="uid:xxx">
+                            <br/>
+                        </div>
+                        <div id="group-password" class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <i class="material-icons">lock_outline</i>
+                                </span>
+                            </div>
+                            <input id="input-password" data-bind="bind-password" type="password" class="form-control" placeholder="Password" autocomplete="">
+                        </div>
+                    </div>
+                    <div class="alert alert-warning alert-dismissible collapse" role="alert">
+                        <h4 class="alert-heading">Warning!</h4>
+                        <p class="alert-body">We have found that you are having trouble entering the information in the following fields. First correct the mentioned problems and then try again. </p>
+                        <hr>
+                        <div id="div-errors" data-bind="bind-errors" class="text-left">
+                            <p data-bind="bind-message" class="mb-0 alert-footing"></p>
+                        </div>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <br />
+                    <div><a href="/forgot"><strong>Forgot your password?</strong></a></div>
+                    <br />
+                    <div class="footer text-center">
+                        <a id="btn-get-start" href="javascript:;" class="btn btn-primary btn-round btn-wd btn-lg">Get Started</a>
+                    </div>
+                    <br />
+                    <div><a href="/sign-up"><strong>Don't have an account? Sign up</strong></a></div>
+                    <br />
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<link href="./sign-in.css" rel="stylesheet " />
+<script src="./sign-in.js"></script>

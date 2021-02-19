@@ -1,0 +1,116 @@
+<p>This is the home page and it takes the full width of the layout</p>
+<a href="/about">About</a>
+
+<script>
+    var app = {
+        data: {
+            refreshToken: null,
+            jwt: null,
+            authenticate: null
+        }
+    };
+
+    const sleep = (ms) => {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    const refresh = ({
+        jwt
+    }, callback) => {
+        return $.ajax({
+            url: 'api/users/refresh-token',
+            type: "POST",
+            contentType: 'application/json',
+            headers: {
+                Authorization: `Bearer ${jwt}`
+            },
+            dataType: 'json',
+            success: function(res) {
+                if (callback) {
+                    callback(null, res.data);
+                }
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                if (callback) {
+                    callback(xhr, null);
+                }
+            }
+        });
+    }
+
+    const revoke = ({
+        jwt,
+        token
+    }, callback) => {
+        return $.ajax({
+            url: 'api/users/revoke-token',
+            type: "POST",
+            contentType: 'application/json',
+            data: JSON.stringify({
+                token: token
+            }),
+            headers: {
+                Authorization: `Bearer ${jwt}`
+            },
+            dataType: 'json',
+            success: function(res) {
+                if (callback) {
+                    callback(null, res.data);
+                }
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                if (callback) {
+                    callback(xhr, null);
+                }
+            }
+        });
+    }
+
+    const connect = ({
+        jwt
+    }, data) => {
+        refresh({
+            jwt: jwt
+        }, (error, res) => {
+            if (error) {
+                if (error.status === 401) {
+                    return $(location).prop('href', '/signin');
+                } else if (error.status === 409) {
+                    return $(location).prop('href', '/signin');
+                } else if (error.status === 403) {
+                    return $(location).prop('href', '/signout');
+                } else {
+                    sleep(60 * 1000);
+                    return connect({
+                        jwt
+                    }, data);
+                }
+            }
+            data.refreshToken = res.refreshToken;
+            data.jwt = res.jwt;
+            Object.assign(data.authenticate, res);
+            sleep(res.jwt.span);
+            return connect({
+                jwt: data.jwt.token
+            }, data);
+        });
+    }
+
+    jQuery(document).ready(function() {
+        const cookie = $.cookie('auth-data');
+        if (cookie !== undefined) {
+            const metadata = JSON.parse(cookie);
+            if (metadata && metadata.uid !== null) {
+                app.data.refreshToken = metadata.refreshToken;
+                app.data.jwt = metadata.jwt;
+                console.info(metadata);
+                app.data.authenticate = metadata;
+                return connect({
+                    jwt: app.data.jwt.token
+                }, app.data);
+            } else {
+                $(location).prop('href', '/signin');
+            }
+        }
+    });
+</script>

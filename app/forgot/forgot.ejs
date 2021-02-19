@@ -1,0 +1,196 @@
+<div id="wizard">
+
+</div>
+
+<script>
+    var app = {
+        data: {
+
+        },
+        identifier: null
+    };
+
+    // Manifest
+    var manifest = {
+        data: {
+            identifier: null
+        },
+
+        init: function($node, runtime) {
+            $node.html(this.html.join("")) // Draw HTML
+                .css({
+                    opacity: 0.1
+                });
+
+            $node.then(function() { // Fade when start succeds
+                $node.animate({
+                    opacity: 1
+                }, 500);
+            });
+        },
+
+        ui: {
+            "#identifier": {
+                bind: function(data, value, $control) {
+                    if (value !== null) {
+                        data.identifier = value;
+                    }
+                    return data.identifier;
+                }
+            },
+            "#btn_forgot": {
+                watch: "#identifier",
+                css: {
+                    ":disabled": function(data) {
+                        return !(data.identifier !== null && data.identifier.length > 0);
+                    }
+                },
+                bind: function(data, value, $control) {
+                    if (value != null) {
+                        if (!(data.identifier !== null && data.identifier.length > 0)) {
+                            data.error = "Alias, UID, Mobile or Email is required"
+                            console.info(data.error);
+                            $("#identifier").focus();
+                            return;
+                        }
+
+                        if (!(data.password !== null && data.password.length > 0)) {
+                            data.error = "Password is required"
+                            console.info(data.error);
+                            $("#password").focus();
+                            return;
+                        }
+
+                        const xhr1 = $.ajax({
+                            url: 'api/emails/check',
+                            type: "post",
+                            contentType: 'application/json',
+                            data: JSON.stringify({
+                                email: data.identifier
+                            }),
+                            dataType: 'json',
+                            async: false
+                        });
+
+                        const xhr2 = $.ajax({
+                            url: 'api/mobiles/check',
+                            type: "post",
+                            contentType: 'application/json',
+                            data: JSON.stringify({
+                                mobile: data.identifier
+                            }),
+                            dataType: 'json',
+                            async: false
+                        });
+
+                        const xhr3 = $.ajax({
+                            url: 'api/alias/check',
+                            type: "post",
+                            contentType: 'application/json',
+                            data: JSON.stringify({
+                                identifier: data.identifier
+                            }),
+                            dataType: 'json',
+                            async: false
+                        });
+
+                        if (xhr1.status === 200) {
+                            data.uid = xhr1.responseJSON.data.uid;
+                        } else if (xhr2.status === 200) {
+                            data.uid = xhr2.responseJSON.data.uid;
+                        } else if (xhr3.status === 200) {
+                            data.uid = xhr3.responseJSON.data.uid;
+                        } else {
+                            data.uid = data.identifier;
+                        }
+
+                        $.ajax({
+                            url: 'api/users/authenticate',
+                            type: "post",
+                            contentType: 'application/json',
+                            data: JSON.stringify({
+                                uid: data.uid,
+                                password: data.password
+                            }),
+                            dataType: 'json',
+                            success: function(res) {
+                                console.info(res);
+                                $.cookie('auth-data', JSON.stringify(res.data), {
+                                    expires: (new Date(Date.parse(res.data.refreshToken.expiresDate) - Date.parse(res.data.refreshToken.updatedAt))).getDay()
+                                });
+                                $(location).prop('href', '/');
+                            },
+                            error: function(xhr, ajaxOptions, thrownError) {
+                                console.info(xhr.responseJSON);
+                                data.error = xhr.responseJSON;
+                            }
+                        });
+                    }
+
+                }
+            }
+        },
+        html: [`
+            <div class="fs20 center w350">
+            <h3>Reset Password</h3>
+            <section>
+            <div>
+                <div>
+                    <span>Hi, there!</span><br />
+                    <span>Welcome to Service</span><br /><br />
+                    <lable for="identifier">Select an account to sign in, forget or manage a saved account on this device</lable><br /><br />
+                    <input id="identifier" name="identifier" type="text" placeholder="Enter your email or mobile ..."/><br />
+                    <span class="my-error-tip"></span>
+                </div><br />
+            </div><br />
+            <div class="center"><input id="btn_forgot" name="btn_forgot" type="button" value="Reset my password"/></div><br />
+            <div><a href="/signin"><strong>Go back to sign in</strong></a></div>
+            <br /><br />
+            <span id="error"></span>
+            </section>
+            </div>`],
+        style: {
+            " .Brown": {
+                "": "color: #A52A2A;",
+                " input": "background-color: #FFFAFA; color: #A52A2A;box-shadow: 0 0 0 4px rgba(26, 0, 0, 0.1);"
+            },
+            " .Tomato": {
+                "": "color: #FF6347;",
+                " input": "background-color: #ffe9e6; color: #FF6347;box-shadow: 0 0 0 4px rgba(26, 4, 0, 0.1);"
+            },
+            " .OrangeRed": {
+                "": "color: #FF4500;",
+                " input": "background-color: #ffece6; color: #FF4500;box-shadow: 0 0 0 4px rgba(26, 7, 0, 0.1);"
+            },
+            " .Orange": {
+                "": "color: #FFA500;",
+                " input": "background-color: #fff6e6; color: #FFA500;box-shadow: 0 0 0 4px rgba(26, 17, 0, 0.1);"
+            },
+            " .Salmon": {
+                "": "color: #FA8072;",
+                " input": "background-color: #fee9e6; color: #FA8072;box-shadow: 0 0 0 4px rgba(25, 3, 1, 0.1);"
+            },
+            " .SeaGreen": {
+                "": "color: #2E8B57;",
+                " input": "background-color: #ecf9f1; color: #2E8B57;box-shadow: 0 0 0 4px rgba(6, 19, 12, 0.1);"
+            },
+            " .SteelBlue": {
+                "": "color: #4682B4;",
+                " input": "background-color: #edf3f8; color: #4682B4;box-shadow: 0 0 0 4px rgba(7, 13, 18, 0.1);"
+            }
+
+        }
+    }
+
+    jQuery(document).ready(function() {
+        const cookie = $.cookie('auth-data');
+        if (cookie !== undefined) {
+            const metadata = JSON.parse(cookie);
+            if (metadata && metadata.uid !== null) {
+                //$(location).prop('href', '/');
+            }
+        }
+        var form = $("#wizard");
+        form.my(manifest, app);
+    });
+</script>

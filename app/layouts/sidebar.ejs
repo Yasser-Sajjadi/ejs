@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%- title %>
+    </title>
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,600" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="assets/jquery.steps.css">
+    <link rel="stylesheet" href="assets/jquery-ui-1.12.1.custom/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" href="http://cdn.cloudwall.me/1.2/general.css" /> ​
+    <link rel="stylesheet" href="assets/style.css">
+    <link rel="stylesheet" href="assets/normalize.css">
+    <!-- Contains Sugar, jQuery, jQuery.my -->
+    <script src="http://cdn.cloudwall.me/1.2/minimal.js"></script>
+    ​
+    <script src="js/jquery.validate.min.js"></script>
+    <script src="js/additional-methods.min.js"></script>
+    <script src="js/jquery.form.js"></script>
+    <script src="js/jquery.steps.min.js"></script>
+    <script src="js/jquery.cookie.js"></script>
+
+    <!-- Contains different rich ui plugins -->
+    <script src="http://cdn.cloudwall.me/1.2/plugins.js"></script>
+
+    <%- script %>
+</head>
+
+<body>
+    <div class="wrapper">
+        <main>
+            <div class="header">
+                <%- include('../components/header.ejs') %>
+            </div>
+            <div>
+                <%- body %>
+            </div>
+            <div class="footer">
+                <%- include('../components/footer.ejs') %>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>

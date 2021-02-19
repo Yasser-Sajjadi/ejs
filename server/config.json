@@ -1,0 +1,13 @@
+{
+    "connectionString": "mongodb://localhost/yab",
+    "secret": "1hGDP0dwNDLkfdwf3lKDLH1F4DwHf2nDFK4LvHwlfFHDLFhLD9x2KFhDLF7LKeF6HK",
+    "emailFrom": "Company",
+    "smtpOptions": {
+        "host": "smtp.ethereal.email",
+        "port": 587,
+        "auth": {
+            "user": "saul.lubowitz30@ethereal.email",
+            "pass": "nyvFyAd9TntxQeH2VX"
+        }
+    }
+}

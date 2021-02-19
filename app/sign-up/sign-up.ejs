@@ -1,0 +1,109 @@
+<div id="wizard" class="section text-center ">
+    <h2 class="title ">Sign In</h2>
+    <section>
+        <div class="section section-signin page-header">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6 mx-auto">
+                        <div class="card card-login">
+                            <form id="form-account" class="form">
+                                <div class="container">
+                                    <div class="card-body">
+                                        <h4 class="card-title">Hi, there!</h4>
+                                        <h6 class="card-subtitle mb-2 text-muted">Welcome to Service</h6>
+                                        <p class="card-text">Select an account to sign in, forget or manage a saved account on this device.</p>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div id="group-alias" class="input-group form-group label-floating has-danger">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">
+                                                <i class="material-icons">face</i>
+                                            </span>
+                                        </div>
+                                        <input id="input-alias" type="text" class="form-control" placeholder="Enter your alias">
+                                        <span id="input-alias-feedback" class="material-icons form-control-feedback">clear</span>
+                                    </div>
+                                    <div id="group-password" class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">
+                                                <i class="material-icons">lock_outline</i>
+                                            </span>
+                                        </div>
+                                        <input id="input-password" type="password" class="form-control" placeholder="Password" autocomplete="" data-html="true" data-container="body" data-toggle="popover" data-placement="top" data-content="" title="Password must meet the following requirements:">
+                                    </div>
+                                    <div id="group-accept" class="form-check">
+                                        <label class="form-check-label">
+                                            <input id="accept" class="form-check-input" type="checkbox" value="">
+                                            I agree to <a><strong>Service agreement</strong></a> and <a><strong>Privacy policy</strong></a>.
+                                            <span class="form-check-sign">
+                                                <span class="check"></span>
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="footer text-center">
+                                    <a id="btn-sign-up" href="javascript:;" class="btn btn-primary btn-round btn-wd btn-lg">Sign Up</a>
+                                </div>
+                                <br />
+                                <div><a href="/sign-in"><strong>Have an account? Sign in</strong></a></div>
+                                <br />
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+</div>
+
+<link href="./sign-up.css" rel="stylesheet " />
+<script src="./sign-up.js"></script>
+
+<template id="popover-password">
+    <div class="form-group">
+        <div id="letter" class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">
+                    <i class="material-icons">close</i>
+                </span>
+            </div>
+            <span class="control-label"><em>At least <strong>one letter</strong></em></span>
+        </div>
+        <div id="capital" class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">
+                <i class="material-icons">close</i>
+            </span>
+            </div>
+            <span class="control-label"><em>At least <strong>one capital letter</strong></em></span>
+        </div>
+        <div id="number" class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">
+                <i class="material-icons">close</i>
+            </span>
+            </div>
+            <span class="control-label"><em>At least <strong>one number</strong></em></span>
+        </div>
+        <div id="special" class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">
+                <i class="material-icons">close</i>
+            </span>
+            </div>
+            <span class="control-label"><em>At least <strong>one special letter</strong></em></span>
+        </div>
+        <div id="length" class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">
+                <i class="material-icons">close</i>
+            </span>
+            </div>
+            <span class="control-label"><em>Be at least <strong>8 characters</strong></em></span>
+        </div>
+    
+    </div>
+</template>
